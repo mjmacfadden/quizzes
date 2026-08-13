@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Business: Day 1 Diagnostic Quiz</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --correct-bg: #dcfce7;
+            --correct-border: #16a34a;
+            --correct-text: #14532d;
+            --incorrect-bg: #fee2e2;
+            --incorrect-border: #dc2626;
+            --incorrect-text: #7f1d1d;
+            --focus-ring: #2563eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--primary);
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        fieldset {
+            border: none;
+        }
+
+        legend {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            padding: 0;
+            width: 100%;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+
+        .option-label:hover {
+            background-color: #f1f5f9;
+        }
+
+        .option-label input[type="radio"] {
+            width: 1.125rem;
+            height: 1.125rem;
+            margin-right: 0.875rem;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .option-label input[type="radio"]:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
+        /* Results & Feedback Styling */
+        .question-card.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct-border);
+        }
+
+        .question-card.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect-border);
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            display: none;
+        }
+
+        .correct .feedback {
+            display: block;
+            color: var(--correct-text);
+        }
+
+        .incorrect .feedback {
+            display: block;
+            color: var(--incorrect-text);
+        }
+
+        /* Results Banner */
+        #results-banner {
+            display: none;
+            background-color: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #results-banner h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        #results-banner p {
+            font-size: 1.125rem;
+            color: var(--text);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:focus-visible {
+            outline: 3px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
+        button.secondary {
+            background-color: #64748b;
+        }
+
+        button.secondary:hover {
+            background-color: #475569;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            header, .question-card, #results-banner {
+                padding: 1.25rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Introduction to Business</h1>
+            <p class="subtitle">Day 1 Diagnostic Quiz — Test your baseline business knowledge!</p>
+        </header>
+
+        <!-- Dynamic Results Announcement -->
+        <div id="results-banner" role="region" aria-live="polite" aria-label="Quiz Results">
+            <h2>Quiz Complete!</h2>
+            <p id="score-text"></p>
+        </div>
+
+        <form id="quiz-form">
+            
+            <!-- Question 1 -->
+            <div class="question-card" id="q1-card">
+                <fieldset>
+                    <legend>1. What type of business ownership is operated by a single individual who receives all profits and incurs all liabilities?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q1" value="A"> Sole Proprietorship</label>
+                        <label class="option-label"><input type="radio" name="q1" value="B"> General Partnership</label>
+                        <label class="option-label"><input type="radio" name="q1" value="C"> C Corporation</label>
+                        <label class="option-label"><input type="radio" name="q1" value="D"> Cooperative</label>
+                    </div>
+                    <div class="feedback" id="q1-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-card" id="q2-card">
+                <fieldset>
+                    <legend>2. According to the Law of Demand, what typically happens when the price of a product increases?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q2" value="A"> Consumer demand increases</label>
+                        <label class="option-label"><input type="radio" name="q2" value="B"> Consumer demand decreases</label>
+                        <label class="option-label"><input type="radio" name="q2" value="C"> Consumer demand stays identical</label>
+                        <label class="option-label"><input type="radio" name="q2" value="D"> Supply drops to zero</label>
+                    </div>
+                    <div class="feedback" id="q2-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-card" id="q3-card">
+                <fieldset>
+                    <legend>3. Which set of terms represents the traditional "4 Ps" of Marketing?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q3" value="A"> People, Process, Profit, Packaging</label>
+                        <label class="option-label"><input type="radio" name="q3" value="B"> Product, Price, Place, Promotion</label>
+                        <label class="option-label"><input type="radio" name="q3" value="C"> Planning, Positioning, Placement, Publicity</label>
+                        <label class="option-label"><input type="radio" name="q3" value="D"> Production, Purchasing, Performance, Payroll</label>
+                    </div>
+                    <div class="feedback" id="q3-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-card" id="q4-card">
+                <fieldset>
+                    <legend>4. What is the fundamental Accounting Equation?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q4" value="A"> Assets = Liabilities + Owner's Equity</label>
+                        <label class="option-label"><input type="radio" name="q4" value="B"> Revenue - Expenses = Assets</label>
+                        <label class="option-label"><input type="radio" name="q4" value="C"> Liabilities = Assets + Owner's Equity</label>
+                        <label class="option-label"><input type="radio" name="q4" value="D"> Net Income = Gross Profit - Taxes</label>
+                    </div>
+                    <div class="feedback" id="q4-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-card" id="q5-card">
+                <fieldset>
+                    <legend>5. Which management function involves establishing goals and specifying the strategies to achieve them?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q5" value="A"> Controlling</label>
+                        <label class="option-label"><input type="radio" name="q5" value="B"> Organizing</label>
+                        <label class="option-label"><input type="radio" name="q5" value="C"> Leading</label>
+                        <label class="option-label"><input type="radio" name="q5" value="A_correct" data-answer="A"> Planning</label>
+                    </div>
+                    <div class="feedback" id="q5-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="question-card" id="q6-card">
+                <fieldset>
+                    <legend>6. What does Corporate Social Responsibility (CSR) mean for a business?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q6" value="A"> Maximizing short-term profit regardless of societal impact</label>
+                        <label class="option-label"><input type="radio" name="q6" value="B"> Operating ethically and contributing positively to society and society's stakeholders</label>
+                        <label class="option-label"><input type="radio" name="q6" value="C"> Following minimum tax laws strictly to avoid penalties</label>
+                        <label class="option-label"><input type="radio" name="q6" value="D"> Replacing board members with elected local government officials</label>
+                    </div>
+                    <div class="feedback" id="q6-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="question-card" id="q7-card">
+                <fieldset>
+                    <legend>7. In a free-market economic system, who primarily dictates what goods and services are produced?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q7" value="A"> Central government planners</label>
+                        <label class="option-label"><input type="radio" name="q7" value="B"> Interactions between consumers and producers in the market</label>
+                        <label class="option-label"><input type="radio" name="q7" value="C"> Non-profit organizations</label>
+                        <label class="option-label"><input type="radio" name="q7" value="D"> International trade regulators</label>
+                    </div>
+                    <div class="feedback" id="q7-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="question-card" id="q8-card">
+                <fieldset>
+                    <legend>8. Which financial term describes raising capital by borrowing money that must be repaid over time with interest?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q8" value="A"> Equity Financing</label>
+                        <label class="option-label"><input type="radio" name="q8" value="B"> Debt Financing</label>
+                        <label class="option-label"><input type="radio" name="q8" value="C"> Crowdfunding</label>
+                        <label class="option-label"><input type="radio" name="q8" value="D"> Retained Earnings</label>
+                    </div>
+                    <div class="feedback" id="q8-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="question-card" id="q9-card">
+                <fieldset>
+                    <legend>9. In strategic business planning, a SWOT analysis evaluates Strengths, Weaknesses, and which two external factors?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q9" value="A"> Options & Targets</label>
+                        <label class="option-label"><input type="radio" name="q9" value="B"> Operations & Timelines</label>
+                        <label class="option-label"><input type="radio" name="q9" value="C"> Opportunities & Threats</label>
+                        <label class="option-label"><input type="radio" name="q9" value="D"> Objectives & Tactics</label>
+                    </div>
+                    <div class="feedback" id="q9-feedback"></div>
+                </fieldset>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="question-card" id="q10-card">
+                <fieldset>
+                    <legend>10. What occurs when a country imports a total value of goods that is higher than the total value of goods it exports?</legend>
+                    <div class="options-group">
+                        <label class="option-label"><input type="radio" name="q10" value="A"> Trade Surplus</label>
+                        <label class="option-label"><input type="radio" name="q10" value="B"> Trade Deficit</label>
+                        <label class="option-label"><input type="radio" name="q10" value="C"> Trade Embargo</label>
+                        <label class="option-label"><input type="radio" name="q10" value="D"> Comparative Advantage</label>
+                    </div>
+                    <div class="feedback" id="q10-feedback"></div>
+                </fieldset>
+            </div>
+
+            <div class="controls">
+                <button type="submit" id="submit-btn">Submit Quiz</button>
+                <button type="button" id="reset-btn" class="secondary">Reset Quiz</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const answerKey = {
+            q1: { answer: "A", label: "Sole Proprietorship" },
+            q2: { answer: "B", label: "Consumer demand decreases" },
+            q3: { answer: "B", label: "Product, Price, Place, Promotion" },
+            q4: { answer: "A", label: "Assets = Liabilities + Owner's Equity" },
+            q5: { answer: "A_correct", label: "Planning" },
+            q6: { answer: "B", label: "Operating ethically and contributing positively to society" },
+            q7: { answer: "B", label: "Interactions between consumers and producers in the market" },
+            q8: { answer: "B", label: "Debt Financing" },
+            q9: { answer: "C", label: "Opportunities & Threats" },
+            q10: { answer: "B", label: "Trade Deficit" }
+        };
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsBanner = document.getElementById('results-banner');
+        const scoreText = document.getElementById('score-text');
+        const resetBtn = document.getElementById('reset-btn');
+
+        quizForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let score = 0;
+            const total = Object.keys(answerKey).length;
+
+            for (let q in answerKey) {
+                const selectedCard = document.getElementById(`${q}-card`);
+                const feedbackDiv = document.getElementById(`${q}-feedback`);
+                const selectedOption = quizForm.querySelector(`input[name="${q}"]:checked`);
+
+                // Reset state
+                selectedCard.classList.remove('correct', 'incorrect');
+
+                if (selectedOption) {
+                    if (selectedOption.value === answerKey[q].answer) {
+                        score++;
+                        selectedCard.classList.add('correct');
+                        feedbackDiv.textContent = "✓ Correct!";
+                    } else {
+                        selectedCard.classList.add('incorrect');
+                        feedbackDiv.textContent = `✗ Incorrect. Correct answer: ${answerKey[q].label}`;
+                    }
+                } else {
+                    selectedCard.classList.add('incorrect');
+                    feedbackDiv.textContent = `✗ Unanswered. Correct answer: ${answerKey[q].label}`;
+                }
+            }
+
+            // Display overall score banner
+            const percentage = Math.round((score / total) * 100);
+            scoreText.textContent = `You scored ${score} out of ${total} (${percentage}%).`;
+            resultsBanner.style.display = 'block';
+
+            // Smooth scroll to top banner
+            resultsBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        resetBtn.addEventListener('click', function() {
+            quizForm.reset();
+            resultsBanner.style.display = 'none';
+
+            for (let q in answerKey) {
+                const selectedCard = document.getElementById(`${q}-card`);
+                const feedbackDiv = document.getElementById(`${q}-feedback`);
+                selectedCard.classList.remove('correct', 'incorrect');
+                feedbackDiv.textContent = '';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
