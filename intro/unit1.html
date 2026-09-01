@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Business Foundations - Practice Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --correct: #16a34a;
+            --correct-bg: #f0fdf4;
+            --incorrect: #dc2626;
+            --incorrect-bg: #fef2f2;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .score-tracker {
+            margin-top: 16px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct);
+            color: var(--correct);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect);
+            color: var(--incorrect);
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct-feedback {
+            background: var(--correct-bg);
+            color: var(--correct);
+            border: 1px solid #bbf7d0;
+        }
+
+        .feedback.incorrect-feedback {
+            background: var(--incorrect-bg);
+            color: var(--incorrect);
+            border: 1px solid #fecaca;
+        }
+
+        .reset-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Unit 1: Business Foundations — Interactive Study Guide</h1>
+        <p class="subtitle">Introduction to Business Practice Exam</p>
+        <div class="score-tracker">
+            <span>Score: <span id="score">0</span> / <span id="total">25</span></span>
+            <button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button>
+        </div>
+    </header>
+
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "At its core, why do businesses exist in an economic system?",
+        options: [
+            "To guarantee lifetime employment for all citizens",
+            "To generate tax revenue for government programs",
+            "To produce goods and services that satisfy human wants and needs",
+            "To maximize the net worth of individual employees"
+        ],
+        answer: 2,
+        concept: "Role of Business (Goods & Services)"
+    },
+    {
+        q: "When mapping out a business model, how should a 'business problem' be defined?",
+        options: [
+            "An unmet need, frustration, or inefficiency experienced by a specific target group",
+            "An unforeseen expense that reduces a company's total profits",
+            "The presence of strong rival companies in the same market",
+            "A failure to reach maximum operational efficiency"
+        ],
+        answer: 0,
+        concept: "Business Problem (BMC)"
+    },
+    {
+        q: "A commuter notices that local train riders struggle to carry hot coffee without spilling it on crowded cars. He designs a reusable, spill-proof lid lock and sells it at station kiosks. What does this situation BEST illustrate?",
+        options: [
+            "A company eliminating market competition",
+            "A business creating artificial scarcity",
+            "A company maximizing its community tax contribution",
+            "A business solution addressing a real customer problem"
+        ],
+        answer: 3,
+        concept: "Business Solution / Customer Problem"
+    },
+    {
+        q: "Which action serves as the MOST effective starting point when launching a new venture?",
+        options: [
+            "Finalizing brand colors, logos, and business cards",
+            "Pinpointing an actual problem or unfulfilled need in the market",
+            "Deciding how many team members to hire immediately",
+            "Setting exact financial profit goals for year three"
+        ],
+        answer: 1,
+        concept: "Starting a Business (Identifying Unmet Needs)"
+    },
+    {
+        q: "A technology firm creates a lightweight solar panel that charges mobile devices twice as fast using standard room light. Which role of business does this invention BEST demonstrate?",
+        options: [
+            "Supporting local sports",
+            "Stimulating competition",
+            "Innovation",
+            "Contributing to the tax base"
+        ],
+        answer: 2,
+        concept: "Role of Business (Innovation)"
+    },
+    {
+        q: "A regional bakery regularly buys flour from local farmers, hires neighborhood bakers, and pays standard wages that employees spend nearby. Which role of business is BEST illustrated here?",
+        options: [
+            "Stimulating the economy",
+            "Creating natural scarcity",
+            "Reducing overall market competition",
+            "Supporting community non-profits"
+        ],
+        answer: 0,
+        concept: "Role of Business (Stimulating the Economy)"
+    },
+    {
+        q: "Which scenario BEST reflects a corporation actively supporting its community?",
+        options: [
+            "A firm upgrading its factory software to boost production",
+            "A business funding a college scholarship fund for local high school seniors",
+            "A store hiring ten additional retail staff members",
+            "A company purchasing new delivery vans"
+        ],
+        answer: 1,
+        concept: "Role of Business (Supporting Communities)"
+    },
+    {
+        q: "Company X operates a manual car wash with 30 staff members. Company Y operates a fully automated laser wash with 2 staff members. Which conclusion is MOST accurate?",
+        options: [
+            "Company X is automatically more profitable than Company Y",
+            "Company Y is not contributing to the economy",
+            "Company Y is not a legitimate business enterprise",
+            "Both companies contribute to the economy in different ways"
+        ],
+        answer: 3,
+        concept: "Economic Contributions / Differing Business Models"
+    },
+    {
+        q: "Which statement correctly defines economic scarcity?",
+        options: [
+            "A situation where consumer demand is zero",
+            "Unlimited human wants paired with limited available resources",
+            "A condition where businesses have infinite capital but zero customers",
+            "An artificial limit placed only on nonprofit organizations"
+        ],
+        answer: 1,
+        concept: "Scarcity (Definition)"
+    },
+    {
+        q: "How does scarcity directly force businesses to make strategic choices?",
+        options: [
+            "Resources like time, labor, and capital are finite",
+            "Federal laws mandate that all companies limit production",
+            "Customers only buy products during seasonal sales",
+            "Businesses naturally have unlimited cash flow"
+        ],
+        answer: 0,
+        concept: "Scarcity & Choice"
+    },
+    {
+        q: "A farm has 100 acres of land and must decide whether to plant wheat or corn this season. Which concept does this choice MOST directly represent?",
+        options: [
+            "Scarcity",
+            "Customer segmentation",
+            "Revenue generation",
+            "Innovation"
+        ],
+        answer: 0,
+        concept: "Scarcity (Application)"
+    },
+    {
+        q: "Which statement BEST describes the concept of opportunity cost (or trade-off)?",
+        options: [
+            "The total financial expense required to start a venture",
+            "The value of the next-best option given up when making a choice",
+            "The guaranteed return on an investment",
+            "A strategy where a business gains resources without giving anything up"
+        ],
+        answer: 1,
+        concept: "Opportunity Cost / Trade-offs (Definition)"
+    },
+    {
+        q: "A coffee shop decides to purchase organic, fair-trade coffee beans, which cost 30% more than standard beans. What is the MOST likely trade-off in this scenario?",
+        options: [
+            "Lower bean quality in exchange for lower retail prices",
+            "Higher material costs in exchange for ethical brand appeal and customer goodwill",
+            "Fewer employees in exchange for lower tax rates",
+            "Guaranteed higher profit margins in exchange for reduced foot traffic"
+        ],
+        answer: 1,
+        concept: "Trade-offs in Business Decisions"
+    },
+    {
+        q: "A student has $50 saved. They can either purchase a textbook required for class or buy tickets to a music concert. The student buys the concert tickets. What is the opportunity cost of this decision?",
+        options: [
+            "The $50 cash spent on the concert",
+            "The entertainment value of attending the concert",
+            "The textbook required for class that they gave up",
+            "The income the textbook publisher lost"
+        ],
+        answer: 2,
+        concept: "Opportunity Cost (Scenario)"
+    },
+    {
+        q: "What is the fundamental focus of a company operating under a traditional single bottom line framework?",
+        options: [
+            "Balancing financial success, social equity, and environmental impact",
+            "Prioritizing net financial profit and financial performance",
+            "Maximizing employee retention over all other metrics",
+            "Minimizing environmental impact regardless of cost"
+        ],
+        answer: 1,
+        concept: "Single Bottom Line"
+    },
+    {
+        q: "Which three elements are evaluated under the triple bottom line approach?",
+        options: [
+            "Profit, People, and Planet",
+            "Products, Pricing, and Promotion",
+            "Payroll, Properties, and Patents",
+            "Planning, Production, and Performance"
+        ],
+        answer: 0,
+        concept: "Triple Bottom Line (Profit, People, Planet)"
+    },
+    {
+        q: "An outdoor boot manufacturer offers a lifetime warranty and free repair services for worn boots, even though repairs cost the company money. Why is this a sensible business strategy under a sustainable framework?",
+        options: [
+            "It completely removes the necessity of generating annual revenues",
+            "It guarantees that competing shoe brands will close down",
+            "It exempts the company from local and state tax obligations",
+            "It builds long-term brand loyalty and enhances corporate reputation"
+        ],
+        answer: 3,
+        concept: "Sustainable Strategy & Brand Loyalty"
+    },
+    {
+        q: "What primary function does the Business Model Canvas (BMC) serve?",
+        options: [
+            "It provides a visual framework showing how a business creates, delivers, and captures value",
+            "It calculates precise tax obligations and employee payroll liabilities",
+            "It legally registers a corporation with state government agencies",
+            "It produces standardized end-of-year financial statements"
+        ],
+        answer: 0,
+        concept: "Business Model Canvas (Overview & Purpose)"
+    },
+    {
+        q: "A student startup designs an affordable mobile studying app tailored specifically for high school students preparing for AP exams. In the Business Model Canvas, what does this target student group represent?",
+        options: [
+            "Revenue Stream",
+            "Unique Value Proposition",
+            "Customer Segment",
+            "Cost Structure"
+        ],
+        answer: 2,
+        concept: "BMC: Customer Segment"
+    },
+    {
+        q: "A company sells a customized meal kit that promises wholesome, chef-curated dinners prepared in under 10 minutes. Which Business Model Canvas component describes this core promise and benefit?",
+        options: [
+            "Unique Value Proposition",
+            "Channels",
+            "Cost Structure",
+            "Customer Segment"
+        ],
+        answer: 0,
+        concept: "BMC: Unique Value Proposition"
+    },
+    {
+        q: "A skincare company reaches its buyers through an e-commerce website, a mobile app, and boutique beauty shops. Which BMC component categorizes these pathways?",
+        options: [
+            "Revenue Streams",
+            "Channels",
+            "Cost Structure",
+            "Customer Relationships"
+        ],
+        answer: 1,
+        concept: "BMC: Channels"
+    },
+    {
+        q: "A software firm charges users a monthly $15 fee to access its cloud storage tools. Which Business Model Canvas component does this incoming cash represent?",
+        options: [
+            "Unique Value Proposition",
+            "Cost Structure",
+            "Key Metrics",
+            "Revenue Streams"
+        ],
+        answer: 3,
+        concept: "BMC: Revenue Streams"
+    },
+    {
+        q: "An artisan candle maker lists store rent, raw wax supplies, custom labels, and website hosting fees in their planning sheet. Under which Business Model Canvas component do these expenses belong?",
+        options: [
+            "Customer Segment",
+            "Cost Structure",
+            "Channels",
+            "Unique Value Proposition"
+        ],
+        answer: 1,
+        concept: "BMC: Cost Structure"
+    },
+    {
+        q: "Which situation serves as the clearest real-world example of scarcity?",
+        options: [
+            "A retail store having unlimited inventory in its warehouse",
+            "A bakery having a fixed budget for ingredients and having to choose what to bake",
+            "A consumer having infinite funds to buy every product on the market",
+            "A shopper deciding between two identical brands on a fully stocked shelf"
+        ],
+        answer: 1,
+        concept: "Scarcity Example"
+    },
+    {
+        q: "A company owner spends $10,000 on new office furniture instead of spending that money on employee training programs. What is the opportunity cost of this choice?",
+        options: [
+            "The $10,000 cash outlay",
+            "The new office furniture",
+            "The gains in productivity and skills from the employee training programs",
+            "The interest earned by keeping the money in a savings account"
+        ],
+        answer: 2,
+        concept: "Opportunity Cost / Trade-off Analysis"
+    }
+];
+
+let score = 0;
+let answered = new Array(quizData.length).fill(false);
+
+function initQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+    
+    quizData.forEach((data, qIndex) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qNum = document.createElement('div');
+        qNum.className = 'question-number';
+        qNum.innerText = `Question ${qIndex + 1} • ${data.concept}`;
+        
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = data.q;
+        
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+        
+        data.options.forEach((opt, oIndex) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${String.fromCharCode(65 + oIndex)}. ${opt}`;
+            btn.onclick = () => checkAnswer(qIndex, oIndex);
+            optionsDiv.appendChild(btn);
+        });
+        
+        const feedback = document.createElement('div');
+        feedback.className = 'feedback';
+        feedback.id = `feedback-${qIndex}`;
+        
+        card.appendChild(qNum);
+        card.appendChild(qText);
+        card.appendChild(optionsDiv);
+        card.appendChild(feedback);
+        container.appendChild(card);
+    });
+    
+    document.getElementById('total').innerText = quizData.length;
+}
+
+function checkAnswer(qIndex, selectedIndex) {
+    if (answered[qIndex]) return;
+    
+    answered[qIndex] = true;
+    const data = quizData[qIndex];
+    const card = document.querySelectorAll('.question-card')[qIndex];
+    const buttons = card.querySelectorAll('.option-btn');
+    const feedback = document.getElementById(`feedback-${qIndex}`);
+    
+    buttons.forEach(btn => btn.disabled = true);
+    
+    if (selectedIndex === data.answer) {
+        score++;
+        buttons[selectedIndex].classList.add('correct');
+        feedback.innerText = "Correct!";
+        feedback.className = "feedback show correct-feedback";
+    } else {
+        buttons[selectedIndex].classList.add('incorrect');
+        buttons[data.answer].classList.add('correct');
+        feedback.innerText = `Incorrect. Correct answer: ${String.fromCharCode(65 + data.answer)}. ${data.options[data.answer]}`;
+        feedback.className = "feedback show incorrect-feedback";
+    }
+    
+    document.getElementById('score').innerText = score;
+}
+
+function resetQuiz() {
+    score = 0;
+    answered.fill(false);
+    document.getElementById('score').innerText = score;
+    initQuiz();
+}
+
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
