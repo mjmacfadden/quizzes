@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: Types of Businesses and Investing - Practice Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --correct: #16a34a;
+            --correct-bg: #f0fdf4;
+            --incorrect: #dc2626;
+            --incorrect-bg: #fef2f2;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .score-tracker {
+            margin-top: 16px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct);
+            color: var(--correct);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect);
+            color: var(--incorrect);
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct-feedback {
+            background: var(--correct-bg);
+            color: var(--correct);
+            border: 1px solid #bbf7d0;
+        }
+
+        .feedback.incorrect-feedback {
+            background: var(--incorrect-bg);
+            color: var(--incorrect);
+            border: 1px solid #fecaca;
+        }
+
+        .reset-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Unit 2: Types of Businesses and Investing — Interactive Study Guide</h1>
+        <p class="subtitle">Introduction to Business Practice Exam</p>
+        <div class="score-tracker">
+            <span>Score: <span id="score">0</span> / <span id="total">25</span></span>
+            <button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button>
+        </div>
+    </header>
+
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "Which defining feature separates a sole proprietorship from all other business ownership models?",
+        options: [
+            "The owner exercises complete managerial authority while bearing unrestricted liability for debts",
+            "The enterprise issue publicly traded equity to generate capital",
+            "The entity is recognized by law as an independent legal person distinct from its founder",
+            "Multiple partners retain shared decision-making power and divide company profits"
+        ],
+        answer: 0,
+        concept: "Sole Proprietorship Characteristics"
+    },
+    {
+        q: "What is the primary motivation for an entrepreneur to form a sole proprietorship, despite the risks?",
+        options: [
+            "It grants full immunity against personal financial losses from corporate claims",
+            "It streamlines the process of raising funds through issuing stock shares",
+            "It offers a simple, low-cost setup that leaves total operational authority with the founder",
+            "It provides total exemption from state, federal, and municipal tax obligations"
+        ],
+        answer: 2,
+        concept: "Sole Proprietorship Advantages & Motivations"
+    },
+    {
+        q: "Why might a business owner choose to establish a partnership rather than a sole proprietorship?",
+        options: [
+            "It guarantees fixed financial earnings regardless of market demand",
+            "It provides complete liability protection for all co-owners involved",
+            "It allows co-owners to pool financial assets, skills, and workload",
+            "It grants immediate authorization to list securities on public stock exchanges"
+        ],
+        answer: 2,
+        concept: "Partnership Advantages"
+    },
+    {
+        q: "What primary benefit leads business owners to choose a Limited Liability Company (LLC) structure?",
+        options: [
+            "It protects personal assets while maintaining pass-through tax treatment for profits",
+            "It guarantees that company stock can be listed on major global stock exchanges",
+            "It legally waives all obligations to pay federal or local income taxes",
+            "It is the only corporate model that requires zero state filing fees or paperwork"
+        ],
+        answer: 0,
+        concept: "LLC Benefits & Taxation"
+    },
+    {
+        q: "What is a major advantage of organizing a business as a corporation?",
+        options: [
+            "Corporate earnings are entirely immune to tax obligations",
+            "Equity rights can be readily bought and sold via corporate stock",
+            "Shareholders are held personally accountable for company debts",
+            "The business structure mandates a single operational manager"
+        ],
+        answer: 1,
+        concept: "Corporation Key Benefits"
+    },
+    {
+        q: "Why is limited liability a crucial safeguard for investors purchasing corporate stock?",
+        options: [
+            "It guarantees regular cash dividend payments to investors",
+            "It shields personal net worth from liabilities exceeding the invested capital",
+            "It ensures that market prices for the stock continuously rise",
+            "It authorizes equity investors to manage day-to-day operations"
+        ],
+        answer: 1,
+        concept: "Shareholder Limited Liability"
+    },
+    {
+        q: "In corporate law, what purpose does the 'corporate shield' (corporate veil) serve?",
+        options: [
+            "It blocks competitor entities from acquiring a majority stake in the company",
+            "It separates personal savings and assets from company liabilities and lawsuits",
+            "It automatically grants newly registered startups a full tax exemption",
+            "It makes the corporation immune to civil lawsuit filings in state courts"
+        ],
+        answer: 1,
+        concept: "Corporate Shield / Corporate Veil"
+    },
+    {
+        q: "Which characteristic correctly describes a private corporation?",
+        options: [
+            "Its equity shares are publicly traded on open financial exchanges",
+            "The federal government retains majority ownership of its capital stock",
+            "It is required to release quarterly earnings statements to the public",
+            "Ownership is held by a limited group and shares are not publicly traded"
+        ],
+        answer: 3,
+        concept: "Private Corporations"
+    },
+    {
+        q: "What is the primary motive when a private business decides to execute an Initial Public Offering (IPO) to go public?",
+        options: [
+            "To simplify daily office management routines",
+            "To qualify for federal grants and subsidies",
+            "To raise expansion funds by selling shares to the investing public",
+            "To eliminate competition within its regional market sector"
+        ],
+        answer: 2,
+        concept: "Going Public / Public Offerings"
+    },
+    {
+        q: "What does an investor acquire when buying shares of stock in a public corporation?",
+        options: [
+            "A legal claim guaranteeing fixed interest payments",
+            "A fractional ownership stake in the enterprise",
+            "A contract guaranteeing a fixed share of annual profits",
+            "Direct executive authority over corporate decisions"
+        ],
+        answer: 1,
+        concept: "Stock Ownership Basics"
+    },
+    {
+        q: "What happens if the market price of a stock falls below its purchase price and the shareholder holds onto the shares?",
+        options: [
+            "The shareholder receives a cash refund from the issuing corporation",
+            "The shareholder experiences an unrealized (paper) loss unless the shares are sold",
+            "The company automatically awards free additional shares to the shareholder",
+            "The shareholder is immediately billed by the company for the price difference"
+        ],
+        answer: 1,
+        concept: "Unrealized Paper Loss vs Realized Loss"
+    },
+    {
+        q: "What is the primary objective of a corporation when issuing equity stock to the market?",
+        options: [
+            "To distribute management responsibilities equally among workers",
+            "To eliminate the need for future financial planning",
+            "To raise investment funds needed for business expansion and development",
+            "To avoid all responsibilities owed to consumer client bases"
+        ],
+        answer: 2,
+        concept: "Why Companies Sell Stock"
+    },
+    {
+        q: "Which definition accurately describes a business franchise model?",
+        options: [
+            "A corporate merger between two directly competing firms",
+            "A contractual system enabling an operator to conduct business using a established brand and business model",
+            "A mandatory permit issued by government authorities to operate locally",
+            "A state-owned business entity managed by public employees"
+        ],
+        answer: 1,
+        concept: "Franchise Model Definition"
+    },
+    {
+        q: "What is the primary responsibility of a franchisor in a business franchise relationship?",
+        options: [
+            "Directly managing daily operations at each individual franchise store",
+            "Providing trademark rights, operating standards, training, and brand support",
+            "Covering all startup loans and ongoing operating costs for franchisees",
+            "Handling local hiring and staffing decisions at every branch location"
+        ],
+        answer: 1,
+        concept: "Role of the Franchisor"
+    },
+    {
+        q: "What is the primary duty of a franchisee operating under a franchise agreement?",
+        options: [
+            "Creating marketing strategies for the entire national brand",
+            "Running the individual branch in accordance with established brand standards",
+            "Collecting monthly royalty checks from neighboring franchise owners",
+            "Issuing equity shares to investors on public markets"
+        ],
+        answer: 1,
+        concept: "Role of the Franchisee"
+    },
+    {
+        q: "How is an initial franchise fee typically structured?",
+        options: [
+            "A monthly assessment calculated as a set percentage of gross revenues",
+            "An upfront, lump-sum payment made to acquire the right to open a franchise location",
+            "A federal tax assessed on businesses operating across state lines",
+            "A reimbursement paid to the franchisee if the location proves unprofitable"
+        ],
+        answer: 1,
+        concept: "Initial Franchise Fee"
+    },
+    {
+        q: "What best defines a ongoing royalty fee in franchising?",
+        options: [
+            "A fixed compensation package paid to local management staff",
+            "An upfront cost required to construct the initial physical location",
+            "A recurring payment, usually calculated as a percentage of gross sales, paid to the franchisor",
+            "A voluntary donation provided to support national advertising campaigns"
+        ],
+        answer: 2,
+        concept: "Royalty Fees"
+    },
+    {
+        q: "What is a major benefit for an entrepreneur purchasing a franchise instead of starting an independent business?",
+        options: [
+            "Complete freedom from operational rules and corporate oversight",
+            "A total elimination of financial risk",
+            "Immediate access to a recognized brand name and established business model",
+            "A legally guaranteed profit margin from the day of launch"
+        ],
+        answer: 2,
+        concept: "Franchisee Advantages"
+    },
+    {
+        q: "What is a major disadvantage of opening a franchise for the local owner?",
+        options: [
+            "A total lack of brand recognition in the market",
+            "A legal prohibition against collecting customer revenue",
+            "Strict operational guidelines and mandatory recurring royalty fees",
+            "An absolute absence of local customer demand"
+        ],
+        answer: 2,
+        concept: "Franchisee Disadvantages"
+    },
+    {
+        q: "Why might a parent company expand through franchising rather than building corporate-owned outlets?",
+        options: [
+            "It facilitates rapid market expansion funded largely by franchisee capital",
+            "It eliminates the need to maintain brand consistency across locations",
+            "It reduces total system revenue while raising overhead costs",
+            "It guarantees uniform profit margins at every location"
+        ],
+        answer: 0,
+        concept: "Franchisor Expansion Strategy"
+    },
+    {
+        q: "Which statement accurately describes the core trade-off between risk and reward in business?",
+        options: [
+            "Low-risk business choices naturally yield higher financial returns",
+            "Higher prospective financial returns generally require accepting greater risk",
+            "Careful operational planning completely eliminates business risk",
+            "A company's profits bear no correlation to its exposure to risk"
+        ],
+        answer: 1,
+        concept: "Risk vs. Reward Relationship"
+    },
+    {
+        q: "An investor purchases 60 shares of stock at $20 per share and later sells all of them at $32 per share. What is the total gain on this investment?",
+        options: [
+            "$12 gain",
+            "$720 gain",
+            "$1,200 gain",
+            "$1,920 gain"
+        ],
+        answer: 1,
+        concept: "Stock Return Calculation (Gain/Loss)"
+    },
+    {
+        q: "What is a primary financial reason an individual might buy equity stock in a firm?",
+        options: [
+            "To secure a guaranteed return on invested capital",
+            "To gain ownership equity and potentially profit through price appreciation or dividends",
+            "To automatically qualify for an employee management position",
+            "To avoid all market risks associated with financial investments"
+        ],
+        answer: 1,
+        concept: "Investment Motivations"
+    },
+    {
+        q: "Which rule accurately describes the risk-return principle in financial markets?",
+        options: [
+            "Assets with higher prospective returns generally carry higher risk",
+            "Investments offering higher returns are safer than low-return options",
+            "Every investment asset class carries an identical level of risk",
+            "Investors can eliminate market risk simply by increasing the size of their investment"
+        ],
+        answer: 0,
+        concept: "Risk-Return Principle"
+    },
+    {
+        q: "An investor acquires 30 shares of stock at $10 per share. Over time, the price per share increases to $18. What is the overall change in value of this position?",
+        options: [
+            "It decreased by $240",
+            "It increased by $240",
+            "It increased by $540",
+            "It remained completely unchanged"
+        ],
+        answer: 1,
+        concept: "Stock Value Calculation"
+    }
+];
+
+let score = 0;
+let answered = new Array(quizData.length).fill(false);
+
+function initQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+    
+    quizData.forEach((data, qIndex) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qNum = document.createElement('div');
+        qNum.className = 'question-number';
+        qNum.innerText = `Question ${qIndex + 1} • ${data.concept}`;
+        
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = data.q;
+        
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+        
+        data.options.forEach((opt, oIndex) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${String.fromCharCode(65 + oIndex)}. ${opt}`;
+            btn.onclick = () => checkAnswer(qIndex, oIndex);
+            optionsDiv.appendChild(btn);
+        });
+        
+        const feedback = document.createElement('div');
+        feedback.className = 'feedback';
+        feedback.id = `feedback-${qIndex}`;
+        
+        card.appendChild(qNum);
+        card.appendChild(qText);
+        card.appendChild(optionsDiv);
+        card.appendChild(feedback);
+        container.appendChild(card);
+    });
+    
+    document.getElementById('total').innerText = quizData.length;
+}
+
+function checkAnswer(qIndex, selectedIndex) {
+    if (answered[qIndex]) return;
+    
+    answered[qIndex] = true;
+    const data = quizData[qIndex];
+    const card = document.querySelectorAll('.question-card')[qIndex];
+    const buttons = card.querySelectorAll('.option-btn');
+    const feedback = document.getElementById(`feedback-${qIndex}`);
+    
+    buttons.forEach(btn => btn.disabled = true);
+    
+    if (selectedIndex === data.answer) {
+        score++;
+        buttons[selectedIndex].classList.add('correct');
+        feedback.innerText = "Correct!";
+        feedback.className = "feedback show correct-feedback";
+    } else {
+        buttons[selectedIndex].classList.add('incorrect');
+        buttons[data.answer].classList.add('correct');
+        feedback.innerText = `Incorrect. Correct answer: ${String.fromCharCode(65 + data.answer)}. ${data.options[data.answer]}`;
+        feedback.className = "feedback show incorrect-feedback";
+    }
+    
+    document.getElementById('score').innerText = score;
+}
+
+function resetQuiz() {
+    score = 0;
+    answered.fill(false);
+    document.getElementById('score').innerText = score;
+    initQuiz();
+}
+
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
