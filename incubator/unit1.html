@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Ideation - Interactive Practice Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --correct: #16a34a;
+            --correct-bg: #f0fdf4;
+            --incorrect: #dc2626;
+            --incorrect-bg: #fef2f2;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .score-tracker {
+            margin-top: 16px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct);
+            color: var(--correct);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect);
+            color: var(--incorrect);
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct-feedback {
+            background: var(--correct-bg);
+            color: var(--correct);
+            border: 1px solid #bbf7d0;
+        }
+
+        .feedback.incorrect-feedback {
+            background: var(--incorrect-bg);
+            color: var(--incorrect);
+            border: 1px solid #fecaca;
+        }
+
+        .reset-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Unit 1: Ideation — Interactive Practice Exam</h1>
+        <p class="subtitle">Business Incubator Study Guide</p>
+        <div class="score-tracker">
+            <span>Score: <span id="score">0</span> / <span id="total">25</span></span>
+            <button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button>
+        </div>
+    </header>
+
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "What is the primary function of the Customer Relationships element in the Business Model Canvas?",
+        options: [
+            "Calculating the operational budget for marketing campaigns",
+            "Defining how a company interacts with, retains, and supports its buyers",
+            "Preparing quarterly tax compliance reports",
+            "Shipping products efficiently through third-party logistics partners"
+        ],
+        answer: 1,
+        concept: "BMC Definition: Customer Relationships"
+    },
+    {
+        q: "Which section of the Business Model Canvas details the pathways through which customers purchase or access a product?",
+        options: ["Channels", "Cost Structure", "Key Metrics", "Revenue Streams"],
+        answer: 0,
+        concept: "BMC: Channels"
+    },
+    {
+        q: "Through which touchpoint can a company actively foster and maintain ongoing customer relationships?",
+        options: [
+            "Its official X (Twitter) account",
+            "Its dedicated Instagram support channel",
+            "All of the above",
+            "Its official Facebook page"
+        ],
+        answer: 2,
+        concept: "BMC Application: Customer Relationship Touchpoints"
+    },
+    {
+        q: "Which entrepreneurial DNA type is characterized by a passion for creating and scaling a business enterprise completely from the ground up?",
+        options: ["Innovator", "Specialist", "Builder", "Opportunist"],
+        answer: 2,
+        concept: "Entrepreneurial DNA: Builder"
+    },
+    {
+        q: "Which company represents a direct competitor to Starbucks Coffee?",
+        options: ["McDonald's", "Dunkin' Donuts", "Burger King", "Jamba Juice"],
+        answer: 1,
+        concept: "Competition Application: Direct Competitors"
+    },
+    {
+        q: "Which component of the Business Model Canvas tracks all top-line funds generated by a business?",
+        options: ["Cost Structure", "Revenue Streams", "Value Proposition", "Key Metrics"],
+        answer: 1,
+        concept: "BMC: Revenue Streams"
+    },
+    {
+        q: "Determining specific data points to collect and analyze in order to evaluate operational performance belongs under which BMC category?",
+        options: ["Cost Structure", "Key Metrics", "Unique Value Proposition", "Revenue Streams"],
+        answer: 1,
+        concept: "BMC: Key Metrics"
+    },
+    {
+        q: "Which statement correctly defines revenue streams within the Business Model Canvas?",
+        options: [
+            "Revenue streams account for all cash generated by a business.",
+            "Revenue streams capture recurring fixed and variable operational expenses.",
+            "Revenue streams describe inventory and warehouse management.",
+            "Revenue streams track user acquisition and retention rates."
+        ],
+        answer: 0,
+        concept: "BMC Definition: Revenue Streams"
+    },
+    {
+        q: "Struggling to design product features that clearly differentiate your offering from existing alternatives reflects which type of risk?",
+        options: ["Product Risk", "Customer Risk", "Operational Risk", "Market Risk"],
+        answer: 0,
+        concept: "Types of Risk: Product Risk"
+    },
+    {
+        q: "Discovering that a target customer segment is too small to sustain a profitable venture represents which type of startup risk?",
+        options: ["Financial Risk", "Customer Risk", "Product Risk", "Market Risk"],
+        answer: 3,
+        concept: "Types of Risk: Market Risk"
+    },
+    {
+        q: "Which of the following serves directly as a sales/distribution channel for a manufacturing business?",
+        options: [
+            "The company's brick-and-mortar retail storefronts",
+            "The company's official corporate blog",
+            "The company's official X (Twitter) handle",
+            "The company's promotional Instagram page"
+        ],
+        answer: 0,
+        concept: "BMC Application: Sales Channels"
+    },
+    {
+        q: "A mobile social platform earning money by serving targeted sponsored ads to active users is an example of which BMC element?",
+        options: ["Product Risk", "Key Metrics", "Cost Structure", "Revenue Streams"],
+        answer: 3,
+        concept: "BMC Application: Revenue Streams"
+    },
+    {
+        q: "Which business model archetype best describes a digital platform that connects sellers and buyers to facilitate transactions?",
+        options: ["The Maker", "The Marketplace", "The Mediapreneur", "The Teacher"],
+        answer: 1,
+        concept: "Business Archetypes: Marketplace"
+    },
+    {
+        q: "A founder who possesses deep technical expertise and industry-specific domain knowledge demonstrates which type of entrepreneurial DNA?",
+        options: ["Opportunist", "Innovator", "Specialist", "Builder"],
+        answer: 2,
+        concept: "Entrepreneurial DNA: Specialist"
+    },
+    {
+        q: "Realizing that long-term operational costs will consistently exceed total sales revenues is an evaluation of which type of startup risk?",
+        options: ["Customer Risk", "Brand Risk", "Product Risk", "Market Risk"],
+        answer: 3,
+        concept: "Types of Risk: Market/Financial Risk"
+    },
+    {
+        q: "Which restaurant chain is a direct competitor to McDonald's in the fast-food market?",
+        options: ["Olive Garden", "Wendy's", "P.F. Chang's", "Taco Bell"],
+        answer: 1,
+        concept: "Competition Application: Direct Competitors"
+    },
+    {
+        q: "The specific benefits and compelling features that persuade customers to select your product over competitors fall under which BMC element?",
+        options: ["Revenue Streams", "Unique Value Proposition", "Key Metrics", "Cost Structure"],
+        answer: 1,
+        concept: "BMC: Unique Value Proposition"
+    },
+    {
+        q: "Which section of the Business Model Canvas outlines all monetary outlays required to operate the business?",
+        options: ["Channels", "Cost Structure", "Revenue Streams", "Customer Relationships"],
+        answer: 1,
+        concept: "BMC: Cost Structure"
+    },
+    {
+        q: "What is the core focus of the Cost Structure section in the Business Model Canvas?",
+        options: [
+            "The core performance indicators used to measure growth",
+            "The top-line sales figures projected for year one",
+            "The essential operational expenses required to run the enterprise",
+            "The logistical routes used to deliver goods to buyers"
+        ],
+        answer: 2,
+        concept: "BMC Definition: Cost Structure"
+    },
+    {
+        q: "Which entrepreneurial DNA type best describes a creator who constantly generates inventive concepts that can be commercialized?",
+        options: ["Innovator", "Specialist", "Opportunist", "Builder"],
+        answer: 0,
+        concept: "Entrepreneurial DNA: Innovator"
+    },
+    {
+        q: "A founder who shines at pitching products, closing deals, and compellingly communicating a vision is displaying traits of which entrepreneurial DNA?",
+        options: ["Builder", "Opportunist", "Specialist", "Innovator"],
+        answer: 1,
+        concept: "Entrepreneurial DNA: Opportunist"
+    },
+    {
+        q: "Which of the following serves as an indirect competitor to a local movie theater?",
+        options: [
+            "A rival movie theater chain",
+            "A nearby retail department store",
+            "A local bowling alley and entertainment venue",
+            "An independent cinema down the street"
+        ],
+        answer: 2,
+        concept: "Competition Application: Indirect Competitors"
+    },
+    {
+        q: "Businesses that target the same customer group by solving the exact same problem with a similar product are classified as:",
+        options: ["Indirect Competitors", "Direct Competitors", "Unique Value Propositions", "Key Metrics"],
+        answer: 1,
+        concept: "Competition: Direct Competitors"
+    },
+    {
+        q: "An entrepreneur who excels at identifying lucrative market possibilities and timely commercial opportunities exhibits which DNA profile?",
+        options: ["Innovator", "Specialist", "Opportunist", "Builder"],
+        answer: 2,
+        concept: "Entrepreneurial DNA: Opportunist"
+    },
+    {
+        q: "What is the most effective way for a startup to capture market attention and differentiate itself from competitors?",
+        options: [
+            "Designing an overly complex product feature set",
+            "Communicating a clear Unique Value Proposition",
+            "Replicating an established rival's exact strategy",
+            "Focusing on an unverified problem"
+        ],
+        answer: 1,
+        concept: "Competitive Differentiation"
+    }
+];
+
+let score = 0;
+let answered = new Array(quizData.length).fill(false);
+
+function initQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+    
+    quizData.forEach((data, qIndex) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qNum = document.createElement('div');
+        qNum.className = 'question-number';
+        qNum.innerText = `Question ${qIndex + 1} • ${data.concept}`;
+        
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = data.q;
+        
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+        
+        data.options.forEach((opt, oIndex) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${String.fromCharCode(65 + oIndex)}. ${opt}`;
+            btn.onclick = () => checkAnswer(qIndex, oIndex);
+            optionsDiv.appendChild(btn);
+        });
+        
+        const feedback = document.createElement('div');
+        feedback.className = 'feedback';
+        feedback.id = `feedback-${qIndex}`;
+        
+        card.appendChild(qNum);
+        card.appendChild(qText);
+        card.appendChild(optionsDiv);
+        card.appendChild(feedback);
+        container.appendChild(card);
+    });
+    
+    document.getElementById('total').innerText = quizData.length;
+}
+
+function checkAnswer(qIndex, selectedIndex) {
+    if (answered[qIndex]) return;
+    
+    answered[qIndex] = true;
+    const data = quizData[qIndex];
+    const card = document.querySelectorAll('.question-card')[qIndex];
+    const buttons = card.querySelectorAll('.option-btn');
+    const feedback = document.getElementById(`feedback-${qIndex}`);
+    
+    buttons.forEach(btn => btn.disabled = true);
+    
+    if (selectedIndex === data.answer) {
+        score++;
+        buttons[selectedIndex].classList.add('correct');
+        feedback.innerText = "Correct!";
+        feedback.className = "feedback show correct-feedback";
+    } else {
+        buttons[selectedIndex].classList.add('incorrect');
+        buttons[data.answer].classList.add('correct');
+        feedback.innerText = `Incorrect. Correct answer: ${String.fromCharCode(65 + data.answer)}. ${data.options[data.answer]}`;
+        feedback.className = "feedback show incorrect-feedback";
+    }
+    
+    document.getElementById('score').innerText = score;
+}
+
+function resetQuiz() {
+    score = 0;
+    answered.fill(false);
+    document.getElementById('score').innerText = score;
+    initQuiz();
+}
+
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
