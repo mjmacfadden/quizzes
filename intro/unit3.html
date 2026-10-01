@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 3: Financials - High School Practice Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --correct: #16a34a;
+            --correct-bg: #f0fdf4;
+            --incorrect: #dc2626;
+            --incorrect-bg: #fef2f2;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .score-tracker {
+            margin-top: 16px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scenario-box {
+            background: #f1f5f9;
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--primary);
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct);
+            color: var(--correct);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect);
+            color: var(--incorrect);
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct-feedback {
+            background: var(--correct-bg);
+            color: var(--correct);
+            border: 1px solid #bbf7d0;
+        }
+
+        .feedback.incorrect-feedback {
+            background: var(--incorrect-bg);
+            color: var(--incorrect);
+            border: 1px solid #fecaca;
+        }
+
+        .reset-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Unit 3: Financials — Practice Quiz</h1>
+        <p class="subtitle">Introduction to Business (High School Level)</p>
+        <div class="score-tracker">
+            <span>Score: <span id="score">0</span> / <span id="total">25</span></span>
+            <button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button>
+        </div>
+    </header>
+
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+const scenario1Text = "<b>Urban Grind Coffee Scenario:</b><br>In 2026, the founders of Urban Grind Coffee invested $45,000 of their own money. An angel investor contributed another $110,000. The cafe purchased commercial espresso machines and counters on credit (on account) for $55,000 and took out a $60,000 small business bank loan. They spent $15,000 cash on coffee beans and mugs, and paid $22,000 cash for a delivery vehicle.";
+
+const scenario2Text = "<b>Apex Apparel Scenario:</b><br><b>Apex Apparel's Sales:</b> T-shirt sales $180,000; Outerwear sales $95,000; Accessories $45,000; Footwear $30,000.<br><b>Apex Apparel's Cost of Goods Sold:</b> Fabric & materials $52,000; Production packaging $14,000; Apparel inventory $38,000; Footwear inventory $16,000.<br><b>Apex Apparel's Operating Expenses:</b> Staff salaries $85,000; Store rent $36,000; Utilities $9,500; Advertising $8,000; Insurance $6,000; General admin $7,500.";
+
+const quizData = [
+    {
+        q: "What does an Income Statement (Profit & Loss Statement) show about a business over a period of time?",
+        options: [
+            "What the business owns, owes, and its total equity on a given date",
+            "How much total revenue was earned, costs incurred, and net profit or loss generated",
+            "The exact bank account balance and physical cash on hand at midnight",
+            "The market valuation of the company's stock shares"
+        ],
+        answer: 1,
+        concept: "Income Statement Purpose"
+    },
+    {
+        q: "Which item below is a classic example of a fixed cost for a brick-and-mortar store?",
+        options: [
+            "The cost of raw materials used in manufacturing items sold",
+            "Shopping bags provided to customers with each purchase",
+            "A set monthly property lease payment for the store location",
+            "Credit card processing fees that increase as sales go up"
+        ],
+        answer: 2,
+        concept: "Fixed Cost Example"
+    },
+    {
+        q: "In business accounting, how are assets best defined?",
+        options: [
+            "Financial obligations or debts that must be paid back to lenders in the future",
+            "Valuable resources owned by a company that support its operations and generate value",
+            "Ongoing operating costs required to keep the doors open each month",
+            "The net profit remaining after paying taxes and operating costs"
+        ],
+        answer: 1,
+        concept: "Assets Definition"
+    },
+    {
+        scenario: scenario1Text,
+        q: "What are Urban Grind Coffee's total Liabilities?",
+        options: [
+            "$60,000",
+            "$115,000",
+            "$170,000",
+            "$270,000"
+        ],
+        answer: 1,
+        concept: "Scenario 1: Liabilities"
+    },
+    {
+        q: "Which of the following represents an operating cost for a coffee shop?",
+        options: [
+            "Espresso beans, milk, and syrup used to make drinks",
+            "Paper cups, lids, and cardboard sleeves for customer orders",
+            "Monthly shop rent, staff hourly wages, and utility bills",
+            "Coffee beans purchased wholesale for resale"
+        ],
+        answer: 2,
+        concept: "Operating Cost Identification"
+    },
+    {
+        q: "Vanguard Design Studio has total assets valued at $280,000, and the owner's equity totals $190,000. What is the total amount of liabilities?",
+        options: [
+            "$90,000",
+            "$470,000",
+            "$190,000",
+            "$280,000"
+        ],
+        answer: 0,
+        concept: "Accounting Equation: Liabilities"
+    },
+    {
+        scenario: scenario2Text,
+        q: "What is Apex Apparel's Total Revenue?",
+        options: [
+            "$275,000",
+            "$350,000",
+            "$230,000",
+            "$180,000"
+        ],
+        answer: 1,
+        concept: "Scenario 2: Total Revenue"
+    },
+    {
+        q: "Which term describes expenses directly tied to producing or acquiring the products a company sells?",
+        options: [
+            "Operating Expenses",
+            "Cost of Goods Sold (COGS)",
+            "Owner's Equity",
+            "Gross Profit"
+        ],
+        answer: 1,
+        concept: "Cost of Goods Sold Definition"
+    },
+    {
+        q: "How are liabilities defined on a business balance sheet?",
+        options: [
+            "The total equity invested into the company by its founding partners",
+            "Cash collected from retail customers during daily sales",
+            "Debts or financial obligations that a business must repay in the future",
+            "Physical equipment used daily to manufacture products"
+        ],
+        answer: 2,
+        concept: "Liabilities Definition"
+    },
+    {
+        scenario: scenario2Text,
+        q: "What is Apex Apparel's Gross Profit?",
+        options: [
+            "$120,000",
+            "$152,000",
+            "$230,000",
+            "$350,000"
+        ],
+        answer: 2,
+        concept: "Scenario 2: Gross Profit"
+    },
+    {
+        q: "What is revenue for a business?",
+        options: [
+            "The total value of all physical assets owned by the business",
+            "Money brought in from selling goods or services to customers",
+            "The cash leftover after paying all monthly operational bills",
+            "The total capital invested by owners to launch the company"
+        ],
+        answer: 1,
+        concept: "Revenue Definition"
+    },
+    {
+        q: "Which of the following is an example of an asset for a bakery?",
+        options: [
+            "Commercial baking ovens and mixing equipment owned by the store",
+            "An unpaid electricity bill for the current month",
+            "A bank loan taken out to pay for kitchen renovations",
+            "Money owed to flour and sugar suppliers for past orders"
+        ],
+        answer: 0,
+        concept: "Asset Example"
+    },
+    {
+        q: "Which statement best describes start-up costs?",
+        options: [
+            "Ongoing monthly expenses like rent, internet, and store insurance",
+            "One-time expenses required to establish and open a business before initial launch",
+            "Costs that fluctuate directly based on the volume of sales made",
+            "The total revenue earned during the first month of operation"
+        ],
+        answer: 1,
+        concept: "Start-up Costs Definition"
+    },
+    {
+        scenario: scenario1Text,
+        q: "What are Urban Grind Coffee's total Assets?",
+        options: [
+            "$155,000",
+            "$270,000",
+            "$307,000",
+            "$322,000"
+        ],
+        answer: 1,
+        concept: "Scenario 1: Total Assets"
+    },
+    {
+        q: "How do profit margins (such as gross or operating margin) help owners evaluate performance?",
+        options: [
+            "They show the exact dollar amount sitting in the business bank account",
+            "They calculate how many individual customers walked through the door",
+            "They measure how efficiently a business converts revenue into actual profit",
+            "They list the total replacement cost of all owned business equipment"
+        ],
+        answer: 2,
+        concept: "Profit Margins Purpose"
+    },
+    {
+        scenario: scenario2Text,
+        q: "Based on the financial data provided above, which figure CANNOT be calculated?",
+        options: [
+            "Gross Profit",
+            "Cost of Goods Sold (COGS)",
+            "Start-up Costs",
+            "Total Revenue"
+        ],
+        answer: 2,
+        concept: "Scenario 2: Uncalculable Figure"
+    },
+    {
+        q: "Summit Trail Gear has total assets of $640,000 and total liabilities of $210,000. What is the total Owner's Equity for this business?",
+        options: [
+            "$850,000",
+            "$430,000",
+            "$210,000",
+            "$640,000"
+        ],
+        answer: 1,
+        concept: "Accounting Equation: Owner's Equity"
+    },
+    {
+        q: "Which item below represents a liability for a retail store?",
+        options: [
+            "Inventory sitting on store shelves ready for sale",
+            "An unpaid invoice owed to a clothing manufacturer for inventory received",
+            "Cash held in the store's primary checking account",
+            "Store display racks and checkout registers owned outright"
+        ],
+        answer: 1,
+        concept: "Liability Example"
+    },
+    {
+        q: "How are business expenses best described?",
+        options: [
+            "The money paid out to fund daily operations and keep the business running",
+            "The profits distributed directly to owners and shareholders",
+            "The remaining cash sitting in the company checking account",
+            "The total value of inventory stored in the warehouse"
+        ],
+        answer: 0,
+        concept: "Expenses Definition"
+    },
+    {
+        scenario: scenario1Text,
+        q: "What is Urban Grind Coffee's total Owner's Equity?",
+        options: [
+            "$45,000",
+            "$115,000",
+            "$155,000",
+            "$270,000"
+        ],
+        answer: 2,
+        concept: "Scenario 1: Owner's Equity"
+    },
+    {
+        q: "If an investor wants to calculate the net worth (Owner's Equity) of a enterprise, which formula should they use?",
+        options: [
+            "Revenue − Expenses",
+            "Assets + Liabilities",
+            "Revenue ÷ Expenses",
+            "Assets − Liabilities"
+        ],
+        answer: 3,
+        concept: "Calculating Business Worth"
+    },
+    {
+        scenario: scenario2Text,
+        q: "What is Apex Apparel's Operating Profit?",
+        options: [
+            "$78,000",
+            "$152,000",
+            "$230,000",
+            "$120,000"
+        ],
+        answer: 0,
+        concept: "Scenario 2: Operating Profit"
+    },
+    {
+        q: "Which item below is an example of a variable cost for a smoothie shop?",
+        options: [
+            "Monthly store insurance policy payment",
+            "The monthly fixed loan repayment on store counters",
+            "The cost of plastic cups, fruit, and ice used for orders",
+            "Salary of the full-time general store manager"
+        ],
+        answer: 2,
+        concept: "Variable Cost Example"
+    },
+    {
+        scenario: scenario2Text,
+        q: "What is Apex Apparel's single largest operating expense?",
+        options: [
+            "Fabric & materials ($52,000)",
+            "Staff salaries ($85,000)",
+            "Store rent ($36,000)",
+            "Outerwear sales ($95,000)"
+        ],
+        answer: 1,
+        concept: "Scenario 2: Largest Expense"
+    },
+    {
+        q: "What does reaching the break-even point mean for a business?",
+        options: [
+            "The point where total revenue equals total expenses, resulting in zero net profit or loss",
+            "The exact day when the business has completely paid off all long-term debts",
+            "The moment an owner recovers their initial personal investment",
+            "The peak sales point that yields the highest profit margin of the year"
+        ],
+        answer: 0,
+        concept: "Break-even Point Definition"
+    }
+];
+
+let score = 0;
+let answered = new Array(quizData.length).fill(false);
+
+function initQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+    
+    quizData.forEach((data, qIndex) => {
+        if (data.scenario) {
+            const scenarioDiv = document.createElement('div');
+            scenarioDiv.className = 'scenario-box';
+            scenarioDiv.innerHTML = `<div class="scenario-title">Reference Scenario</div>${data.scenario}`;
+            container.appendChild(scenarioDiv);
+        }
+
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qNum = document.createElement('div');
+        qNum.className = 'question-number';
+        qNum.innerText = `Question ${qIndex + 1} • ${data.concept}`;
+        
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = data.q;
+        
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+        
+        data.options.forEach((opt, oIndex) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${String.fromCharCode(65 + oIndex)}. ${opt}`;
+            btn.onclick = () => checkAnswer(qIndex, oIndex);
+            optionsDiv.appendChild(btn);
+        });
+        
+        const feedback = document.createElement('div');
+        feedback.className = 'feedback';
+        feedback.id = `feedback-${qIndex}`;
+        
+        card.appendChild(qNum);
+        card.appendChild(qText);
+        card.appendChild(optionsDiv);
+        card.appendChild(feedback);
+        container.appendChild(card);
+    });
+    
+    document.getElementById('total').innerText = quizData.length;
+}
+
+function checkAnswer(qIndex, selectedIndex) {
+    if (answered[qIndex]) return;
+    
+    answered[qIndex] = true;
+    const data = quizData[qIndex];
+    const cards = document.querySelectorAll('.question-card');
+    const card = cards[qIndex];
+    const buttons = card.querySelectorAll('.option-btn');
+    const feedback = document.getElementById(`feedback-${qIndex}`);
+    
+    buttons.forEach(btn => btn.disabled = true);
+    
+    if (selectedIndex === data.answer) {
+        score++;
+        buttons[selectedIndex].classList.add('correct');
+        feedback.innerText = "Correct! Great job understanding this financial concept.";
+        feedback.className = "feedback show correct-feedback";
+    } else {
+        buttons[selectedIndex].classList.add('incorrect');
+        buttons[data.answer].classList.add('correct');
+        feedback.innerText = `Incorrect. Correct answer: ${String.fromCharCode(65 + data.answer)}. ${data.options[data.answer]}`;
+        feedback.className = "feedback show incorrect-feedback";
+    }
+    
+    document.getElementById('score').innerText = score;
+}
+
+function resetQuiz() {
+    score = 0;
+    answered.fill(false);
+    document.getElementById('score').innerText = score;
+    initQuiz();
+}
+
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
