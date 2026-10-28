@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: Customer Discovery - Interactive Practice Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --correct: #16a34a;
+            --correct-bg: #f0fdf4;
+            --incorrect: #dc2626;
+            --incorrect-bg: #fef2f2;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .score-tracker {
+            margin-top: 16px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct);
+            color: var(--correct);
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg);
+            border-color: var(--incorrect);
+            color: var(--incorrect);
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct-feedback {
+            background: var(--correct-bg);
+            color: var(--correct);
+            border: 1px solid #bbf7d0;
+        }
+
+        .feedback.incorrect-feedback {
+            background: var(--incorrect-bg);
+            color: var(--incorrect);
+            border: 1px solid #fecaca;
+        }
+
+        .reset-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Unit 2: Customer Discovery — Interactive Practice Exam</h1>
+        <p class="subtitle">Business Incubator Study Guide</p>
+        <div class="score-tracker">
+            <span>Score: <span id="score">0</span> / <span id="total">25</span></span>
+            <button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button>
+        </div>
+    </header>
+
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "In a B2B (Business-to-Business) discovery process, who is the 'decision-maker'?",
+        options: [
+            "The daily operational user of the software",
+            "An external consultant providing general market commentary",
+            "The IT administrative staff member applying software updates",
+            "The executive or manager holding direct budget authority and approval power"
+        ],
+        answer: 3,
+        concept: "B2B Discovery: Decision-Maker Identification"
+    },
+    {
+        q: "Categorizing a target audience by measurable attributes such as household income, occupation, and age group is an example of using:",
+        options: [
+            "Psychographics",
+            "Demographics",
+            "Geographics",
+            "Behavioral segmentation"
+        ],
+        answer: 1,
+        concept: "Market Segmentation: Demographics"
+    },
+    {
+        q: "What is the primary focus when conducting solution interviews?",
+        options: [
+            "To assess whether your proposed concept effectively resolves the validated problem and if prospective users value it enough to pay",
+            "To calculate fixed vs. variable operational expenses on the canvas",
+            "To map out demographic traits of cold contacts across social channels",
+            "To uncover initial baseline pain points without mentioning any product concept"
+        ],
+        answer: 0,
+        concept: "Discovery Framework: Solution Interviews"
+    },
+    {
+        q: "An entrepreneur interviews ten close relatives about a new product concept, and every relative praises the idea. Why is this discovery approach flawed, and what is the best corrective step?",
+        options: [
+            "The sample is too large; she should focus exclusively on two core family members",
+            "The sample exhibits confirmation bias from close contacts; she should interview unbiased target individuals who face the problem",
+            "The findings are fully validated; she should immediately start mass production",
+            "The questions were too informal; she should send them an anonymous online survey instead"
+        ],
+        answer: 1,
+        concept: "Discovery Best Practices: Avoiding Selection Bias"
+    },
+    {
+        q: "Achieving 'Problem-Solution Fit' indicates that a startup has:",
+        options: [
+            "Secured 50% market share against all legacy rivals",
+            "Validated that a meaningful problem exists and that their proposed solution effectively resolves it for a specific target segment",
+            "Exhausted all seed capital on initial marketing blitzes",
+            "Established fully automated, passive profitability"
+        ],
+        answer: 1,
+        concept: "Milestones: Problem-Solution Fit"
+    },
+    {
+        q: "Sarah registers for a newly launched meal-planning app on day one. Although the interface has minor bugs and limited recipes, it directly addresses her dietary tracking struggles, so she actively sends feedback to the team. Sarah is a clear example of:",
+        options: [
+            "A price-sensitive consumer",
+            "A late-majority buyer",
+            "An early adopter",
+            "A mainstream end-user"
+        ],
+        answer: 2,
+        concept: "Customer Discovery Application: Early Adopter Behavior"
+    },
+    {
+        q: "Which response during a solution interview represents the strongest positive validation signal?",
+        options: [
+            "The participant offers polite compliments but refuses to commit time or money",
+            "The participant attempts to talk about unrelated industry news",
+            "The participant asks to sign a letter of intent, pay a deposit, or join a pilot test immediately",
+            "The participant requests a technical explanation of the software codebase"
+        ],
+        answer: 2,
+        concept: "Validation Metrics: Strong Buying Signals"
+    },
+    {
+        q: "What is the fundamental goal of developing a 'Customer Persona'?",
+        options: [
+            "To project quarterly sales tax obligations",
+            "To construct a realistic profile summarizing the demographics, goals, behaviors, and pain points of an ideal user",
+            "To defend brand logos against trademark infringement",
+            "To calculate exact unit manufacturing costs"
+        ],
+        answer: 1,
+        concept: "Customer Profiling: Persona Definition"
+    },
+    {
+        q: "A father purchases a subscription to an online coding course for his teenage daughter. How are their roles classified?",
+        options: [
+            "The father is the buyer, and the daughter is the end user",
+            "Both father and daughter are classified purely as users",
+            "The daughter is the buyer, and the father is the end user",
+            "The father is an early adopter, while the daughter is a buyer"
+        ],
+        answer: 0,
+        concept: "Customer Roles Application: Purchasing Context"
+    },
+    {
+        q: "In a Business Model Canvas, why do entrepreneurs map out specific Customer Segments?",
+        options: [
+            "To categorize the internal operational roles of their founding team",
+            "To list every third-party vendor and material supplier required for manufacturing",
+            "To pinpoint distinct groups of individuals or organizations suffering from the target problem",
+            "To research direct competitors selling similar solutions in the industry"
+        ],
+        answer: 2,
+        concept: "BMC: Customer Segments Purpose"
+    },
+    {
+        q: "During problem interviews, an entrepreneur notices that recent candidates are repeating the exact same stories, pain points, and workarounds without revealing any new insights. What does this indicate?",
+        options: [
+            "She has reached data saturation and can proceed to testing solutions",
+            "Her interview structure is broken and must be made significantly harder",
+            "She must complete at least 100 total interviews before stopping",
+            "She should replace interviews with quantitative multi-choice surveys"
+        ],
+        answer: 0,
+        concept: "Data Analysis: Reaching Saturation"
+    },
+    {
+        q: "Which question type should be strictly avoided during early problem interviews?",
+        options: [
+            "Leading questions that prompt agreement, such as 'Don't you agree that an automated app would make this much easier?'",
+            "Questions exploring how users currently handle their daily workflow",
+            "Follow-up 'why' questions probing a recent negative experience",
+            "Open-ended questions asking for specific stories about recent challenges"
+        ],
+        answer: 0,
+        concept: "Interview Methodology: Biased Questioning"
+    },
+    {
+        q: "Which approach yields the most accurate insights during customer interviews?",
+        options: [
+            "Pitching feature benefits aggressively and overcoming every user objection",
+            "Engaging in active listening, asking open-ended questions about past behavior, and encouraging context",
+            "Following a rigid script without asking follow-up 'why' questions",
+            "Distributing paper questionnaires and leaving the candidate unattended"
+        ],
+        answer: 1,
+        concept: "Interview Techniques: Active Listening"
+    },
+    {
+        q: "How are 'Early Adopters' uniquely defined during the customer discovery phase?",
+        options: [
+            "Venture capitalists who fund early-stage product development in exchange for equity",
+            "Users who experience a pain point acutely and actively seek or adopt early solutions before the broader market",
+            "Institutional buyers who require multi-year contracts and extensive feature sets",
+            "Risk-averse consumers who wait until a product becomes mainstream and highly rated"
+        ],
+        answer: 1,
+        concept: "Customer Profiles: Early Adopters"
+    },
+    {
+        q: "What defines a 'cold contact' when reaching out to prospective interview candidates?",
+        options: [
+            "An existing user who has purchased multiple subscriptions",
+            "A prospective interviewee with whom the founder has no prior relationship or connection",
+            "A personal friend or former coworker",
+            "A founding partner on the core development team"
+        ],
+        answer: 1,
+        concept: "Candidate Sourcing: Cold Outreach"
+    },
+    {
+        q: "When should a prototype or demo visual be introduced within the discovery framework?",
+        options: [
+            "During solution interviews to help prospects visualize and evaluate how the product solves their problem",
+            "During initial problem interviews to impress candidates with early feature designs",
+            "Only after a venture completes an initial public offering (IPO)",
+            "In place of all customer conversations to collect automated clicks"
+        ],
+        answer: 0,
+        concept: "Discovery Tools: Solution Demo Timing"
+    },
+    {
+        q: "If customer interviews consistently reveal that target users do not view the identified pain point as important or worth solving, the founder should:",
+        options: [
+            "Proceed with full-scale development and double the marketing spend",
+            "Pivot or refine the problem and customer hypotheses based on interview data",
+            "Bypass discovery entirely and launch directly into national distribution",
+            "Reduce the retail price to zero to force user adoption"
+        ],
+        answer: 1,
+        concept: "Iteration: Pivoting on Negative Feedback"
+    },
+    {
+        q: "A team developing a fitness tracking platform identifies three target groups: high school athletes, marathon runners, and senior citizens recovering from joint surgery. On their Business Model Canvas, these groups belong under:",
+        options: [
+            "Customer Segments",
+            "Early Adopters",
+            "Key Metrics",
+            "Value Propositions"
+        ],
+        answer: 0,
+        concept: "BMC Application: Customer Segments"
+    },
+    {
+        q: "What is the core goal of conducting problem interviews?",
+        options: [
+            "To secure advance product presales and sign service agreements",
+            "To confirm whether a real problem exists, assess its severity, and identify who experiences it",
+            "To demonstrate prototype UI design to early testers",
+            "To negotiate wholesale pricing options with distribution partners"
+        ],
+        answer: 1,
+        concept: "Discovery Framework: Problem Interviews"
+    },
+    {
+        q: "During student interviews regarding study habits, Marcus avoids showing his app mockups and instead asks candidates how they currently organize notes and what frustrates them about existing tools. Marcus is engaged in:",
+        options: [
+            "A solution interview focused on prototype feedback",
+            "A product pitch session designed to gain waitlist signups",
+            "A problem interview exploring pain points and current habits",
+            "A quantitative survey to calculate market size"
+        ],
+        answer: 2,
+        concept: "Interview Execution: Problem Interviews"
+    },
+    {
+        q: "In lean startup methodology, what is the core role of an early solution demo or Minimum Viable Product (MVP)?",
+        options: [
+            "To test key hypotheses and maximize validated learning with minimal effort and resources",
+            "To guarantee maximum short-term profit margins across all market sectors",
+            "To eliminate the need for future customer feedback",
+            "To demonstrate fully scaled manufacturing automation to retail distributors"
+        ],
+        answer: 0,
+        concept: "Validation Tools: Early Solution Demos"
+    },
+    {
+        q: "Which tools are commonly employed to demonstrate a product concept during solution interviews?",
+        options: [
+            "Audited financial disclosures and balance sheets",
+            "Wireframes, interactive mockups, storyboards, and low-fidelity prototypes",
+            "Enforceable non-disclosure agreements and employment contracts",
+            "Mass-media advertising spots and promotional banners"
+        ],
+        answer: 1,
+        concept: "Discovery Artifacts: Prototyping Tools"
+    },
+    {
+        q: "After demonstrating a prototype to eight prospective clients, five express strong interest in purchasing and ask about launch dates. Analyzing these specific responses helps answer which question?",
+        options: [
+            "Does our proposed solution address the user's pain point effectively, and is there buying intent?",
+            "What corporate tax structure should the business adopt for registration?",
+            "Who are our top indirect competitors in the enterprise space?",
+            "How should we structure internal payroll for technical developers?"
+        ],
+        answer: 0,
+        concept: "Validation Analysis: Solution Evaluation"
+    },
+    {
+        q: "Why is analyzing 'existing alternatives' a critical step during problem discovery?",
+        options: [
+            "It helps founders understand how target users currently attempt to solve or manage their problem and what budget they allocate",
+            "It allows startups to duplicate competitor features without modification",
+            "It is required by federal regulators before opening a business bank account",
+            "It helps identify companies to acquire prior to product launch"
+        ],
+        answer: 0,
+        concept: "Problem Context: Existing Alternatives"
+    },
+    {
+        q: "Which statement accurately describes the core difference between a 'buyer' and a 'user'?",
+        options: [
+            "The buyer handles the financial transaction and purchasing decision, whereas the user directly interacts with and benefits from the product",
+            "Buyers and users are always legally required to be the same person",
+            "Users manage contract approvals, while buyers test product usability",
+            "Buyers only participate in non-profit and educational purchasing models"
+        ],
+        answer: 0,
+        concept: "Customer Roles: Buyer vs. User"
+    }
+];
+
+let score = 0;
+let answered = new Array(quizData.length).fill(false);
+
+function initQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+    
+    quizData.forEach((data, qIndex) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        const qNum = document.createElement('div');
+        qNum.className = 'question-number';
+        qNum.innerText = `Question ${qIndex + 1} • ${data.concept}`;
+        
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerText = data.q;
+        
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+        
+        data.options.forEach((opt, oIndex) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `${String.fromCharCode(65 + oIndex)}. ${opt}`;
+            btn.onclick = () => checkAnswer(qIndex, oIndex);
+            optionsDiv.appendChild(btn);
+        });
+        
+        const feedback = document.createElement('div');
+        feedback.className = 'feedback';
+        feedback.id = `feedback-${qIndex}`;
+        
+        card.appendChild(qNum);
+        card.appendChild(qText);
+        card.appendChild(optionsDiv);
+        card.appendChild(feedback);
+        container.appendChild(card);
+    });
+    
+    document.getElementById('total').innerText = quizData.length;
+}
+
+function checkAnswer(qIndex, selectedIndex) {
+    if (answered[qIndex]) return;
+    
+    answered[qIndex] = true;
+    const data = quizData[qIndex];
+    const card = document.querySelectorAll('.question-card')[qIndex];
+    const buttons = card.querySelectorAll('.option-btn');
+    const feedback = document.getElementById(`feedback-${qIndex}`);
+    
+    buttons.forEach(btn => btn.disabled = true);
+    
+    if (selectedIndex === data.answer) {
+        score++;
+        buttons[selectedIndex].classList.add('correct');
+        feedback.innerText = "Correct!";
+        feedback.className = "feedback show correct-feedback";
+    } else {
+        buttons[selectedIndex].classList.add('incorrect');
+        buttons[data.answer].classList.add('correct');
+        feedback.innerText = `Incorrect. Correct answer: ${String.fromCharCode(65 + data.answer)}. ${data.options[data.answer]}`;
+        feedback.className = "feedback show incorrect-feedback";
+    }
+    
+    document.getElementById('score').innerText = score;
+}
+
+function resetQuiz() {
+    score = 0;
+    answered.fill(false);
+    document.getElementById('score').innerText = score;
+    initQuiz();
+}
+
+window.onload = initQuiz;
+</script>
+
+</body>
+</html>
